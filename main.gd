@@ -28,9 +28,6 @@ func _on_player_jump():
 			make_puff(&"air_jump")
 		else:
 			make_puff(&"ground_jump")
-			
-func _on_player_slide():
-	make_puff(&"slide")
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")

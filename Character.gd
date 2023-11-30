@@ -2,7 +2,6 @@ extends CharacterBody2D
 
 signal jumppuff
 signal air_jumppuff
-signal slidepuff
 signal landpuff
 signal camera_change
 
@@ -117,11 +116,7 @@ func _physics_process(delta):
 			
 	else:
 		move(direction, false)
-		velocity.x = move_toward(velocity.x, 0, SPEED/7)
-		if is_on_floor() and velocity.x == 0:
-			is_sliding = false
-		if is_on_floor() and not is_crouching and not is_shooting and not is_sliding:
-			$Sprite.set_animation(&"idle")
+		
 		
 	
 	if Input.is_action_pressed(&"Crouch") and is_on_floor():
@@ -133,8 +128,8 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x,0,SPEED/4)
 		if velocity.x != 0:
 			$Sprite.set_animation(&"slide")
-			if not slide_started:
-				slidepuff.emit()
+			if check_start_of():
+				main.make_puff(&"slide")
 			slide_started = true
 		else:
 			is_sliding = false
@@ -262,3 +257,7 @@ func move(run_direction, go):
 	if not go:
 		is_running = false
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
+		if is_on_floor() and velocity.x == 0:
+			is_sliding = false
+		if is_on_floor() and not is_crouching and not is_shooting and not is_sliding:
+			$Sprite.set_animation(&"idle")
