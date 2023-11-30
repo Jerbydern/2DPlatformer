@@ -101,7 +101,7 @@ func _physics_process(delta):
 				enemy.revive()
 		
 		if Input.is_action_pressed(&"debug1") and Input.is_action_pressed(&"debug2"):
-			position = Vector2(200,200)
+			position = main.get_node("Start_Point").position
 			
 			
 	# Get the input direction and handle the movement/deceleration.

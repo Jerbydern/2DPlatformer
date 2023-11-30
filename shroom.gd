@@ -92,7 +92,6 @@ func _on_sprite_animation_finished():
 			$Sprite.set_animation(&"idle")
 			
 func revive():
-	print("alive")
 	dying = false
 	health = starting_health
 	alive = true
