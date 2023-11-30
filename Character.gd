@@ -53,6 +53,9 @@ var frame = 0
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
+func _ready():
+	position = main.get_node("Start_Point").position
+
 func _physics_process(delta):
 	# Add the gravity.
 	if is_on_floor():
@@ -102,10 +105,7 @@ func _physics_process(delta):
 			position = Vector2(200,200)
 			
 			
-		
-		
 	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
 	direction = Input.get_axis(&"Left", &"Right")
 	direction *= 2
 	if direction >1:
@@ -114,8 +114,7 @@ func _physics_process(delta):
 		direction = -1
 	if direction and not is_crouching and not is_sliding:
 		move(direction,true)
-		if is_on_floor() and not is_crouching:
-			$Sprite.set_animation(&"walk")
+			
 	else:
 		move(direction, false)
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
@@ -243,8 +242,9 @@ func set_hitbox(hitbox):
 		iteration.set_disabled(true)
 	hitbox.set_disabled(false)
 
-func set_start_of(action, set):
-	pass
+func check_start_of():
+	if last_frame != $Sprite.animation:
+		return true
 	
 
 func move(run_direction, go):
@@ -252,9 +252,11 @@ func move(run_direction, go):
 	if go:
 		velocity.x = run_direction*SPEED
 	if go and is_on_floor():
-		if not is_running and not just_landed():
+		$Sprite.set_animation(&"walk")
+		if check_start_of() and not just_landed():
 			main.make_puff(&"run")
 		is_running = true
+		
 		
 		
 	if not go:
