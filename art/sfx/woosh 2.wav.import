@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ckcaucs3jedai"
+path="res://.godot/imported/woosh 2.wav-62e4ea3658088464ac6e6ec92a280d06.sample"
+
+[deps]
+
+source_file="res://art/sfx/woosh 2.wav"
+dest_files=["res://.godot/imported/woosh 2.wav-62e4ea3658088464ac6e6ec92a280d06.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
