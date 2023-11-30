@@ -20,14 +20,6 @@ func _process(_delta):
 		footstep(true)
 	else:
 		footstep(false)
-
-
-func _on_player_jump():
-	if $Player.can_jump:
-		if not $Player.is_on_floor():
-			make_puff(&"air_jump")
-		else:
-			make_puff(&"ground_jump")
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")
@@ -35,13 +27,6 @@ func delete_puff():
 		if this_puff.done:
 			this_puff.queue_free()
 			
-func _on_player_runpuff():
-	
-	if not $Player.run_started and $Player.is_on_floor() and not $Player.just_landed():
-		
-		
-			
-		make_puff(&"run")
 
 		
 func make_puff(puff_type):
@@ -66,11 +51,6 @@ func make_puff(puff_type):
 	this_puff.play()
 
 
-
-func _on_player_landpuff():
-	make_puff(&"land")
-
-
 func _on_footstep_timer_timeout():
 	can_footstep = true
 	
@@ -92,13 +72,14 @@ func footstep(go):
 	
 
 
-func _on_player_camera_change():
-	if camera == 0:
-		get_node("Player/Camera2D").reparent(get_node("Shroom"))
-		get_node("Shroom/Camera2D").position = $Shroom.position
-		camera = 1
-	elif camera == 1:
-		get_node("Shroom/Camera2D").reparent(get_node("Player"))
-		get_node("Player/Camera2D").position = $Player.position
-		camera = 0
+func camera_change():
+	var playercam = get_node("Player/PlayerCamera")
+	var shroomcam = get_node("Shroom9/ShroomCamera")
+	if playercam.enabled:
+		playercam.set_enabled(false)
+		shroomcam.set_enabled(true)
+	elif shroomcam.enabled:
+		playercam.set_enabled(true)
+		shroomcam.set_enabled(false)
+			
 		

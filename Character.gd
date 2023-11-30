@@ -1,10 +1,5 @@
 extends CharacterBody2D
 
-signal jumppuff
-signal air_jumppuff
-signal landpuff
-signal camera_change
-
 
 @onready var main = get_node("/root/main")
 const SPEED = 300.0
@@ -74,12 +69,13 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed(&"Jump"):
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
+			main.make_puff(&"ground_jump")
 			
 		elif can_jump:
 			velocity.y = JUMP_VELOCITY*air_jump_modifier
+			main.make_puff(&"air_jump")
 			air_jumps_left -= 1
 		jumping = true
-		jumppuff.emit()
 	
 	air_status = is_on_floor()
 		
@@ -93,6 +89,9 @@ func _physics_process(delta):
 					enemy.hit(arrow_damage)
 	
 	if Global.debug:
+		
+		if Input.is_action_just_pressed(&"debug1") and not Input.is_action_pressed(&"debug2"):
+			main.camera_change()
 		
 		if Input.is_action_just_pressed(&"debug2"):
 			print("reviving")
@@ -142,7 +141,7 @@ func _physics_process(delta):
 		is_crouching = false
 	
 	if Input.is_action_just_pressed(&"misc"):
-		camera_change.emit()
+		main.camera_change()
 	
 	
 	if jumping:
@@ -155,7 +154,7 @@ func _physics_process(delta):
 		$Sprite.play()
 		
 	if just_landed():
-		landpuff.emit()
+		main.make_puff(&"land")
 	
 	last_frame = $Sprite.animation
 	last_air_status = is_on_floor()
