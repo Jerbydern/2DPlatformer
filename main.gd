@@ -12,15 +12,24 @@ func _ready():
 	$Player.get_node("Sprite").play(&"idle")
 	$Shroom.get_node("Sprite").play(&"idle")
 	footstep_sounds = get_node("./Player/footsteps").get_children()
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	pass
-	#if $Player.is_running and $Player.is_on_floor():
-		#footstep(true)
-	#else:
-		#footstep(false)
+	if Global.debug:
+		
+		if Input.is_action_just_pressed(&"debug1") and not Input.is_action_pressed(&"debug2"):
+			camera_change()
+		
+		if Input.is_action_just_pressed(&"debug2"):
+			print("reviving")
+			var enemies = get_tree().get_nodes_in_group("enemies")
+			for enemy in enemies:
+				enemy.revive()
+		
+		if Input.is_action_pressed(&"debug1") and Input.is_action_pressed(&"debug2"):
+			position = get_node("Start_Point").position
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")
@@ -62,7 +71,6 @@ func footstep():
 			curr_footstep += 1
 		else:
 			curr_footstep = 0
-		print(curr_footstep)
 	
 
 

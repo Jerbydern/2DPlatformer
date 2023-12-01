@@ -177,6 +177,7 @@ height = 36.0
 [node name="Shroom" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 3
+platform_floor_layers = 4294901760
 script = ExtResource("1_4hjbn")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
