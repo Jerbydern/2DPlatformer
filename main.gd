@@ -16,10 +16,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	if $Player.is_running and $Player.is_on_floor():
-		footstep(true)
-	else:
-		footstep(false)
+	pass
+	#if $Player.is_running and $Player.is_on_floor():
+		#footstep(true)
+	#else:
+		#footstep(false)
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")
@@ -54,21 +55,14 @@ func make_puff(puff_type):
 func _on_footstep_timer_timeout():
 	can_footstep = true
 	
-func footstep(go):
+func footstep():
 
-	if can_footstep and go:
 		footstep_sounds[curr_footstep].play(0)
-		can_footstep = false
 		if curr_footstep < footstep_sounds.size() -1:
 			curr_footstep += 1
 		else:
 			curr_footstep = 0
-	if not go:
-		$FootstepTimer.stop()
-		can_footstep = true
-	elif go and $FootstepTimer.is_stopped():
-		$FootstepTimer.start()
-		pass
+		print(curr_footstep)
 	
 
 

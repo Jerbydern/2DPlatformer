@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://t2umics8n45q"]
+[gd_scene load_steps=62 format=3 uid="uid://t2umics8n45q"]
 
 [ext_resource type="Texture2D" uid="uid://b1jd1mwsgyo40" path="res://art/oak_woods_v1.0/background/background_layer_1.png" id="1_wt7pj"]
 [ext_resource type="Script" path="res://main.gd" id="1_xkjga"]
@@ -27,6 +27,7 @@
 [ext_resource type="AudioStream" uid="uid://x5qqwiwce1y5" path="res://art/sfx/footstep dirt 16.wav" id="25_eg28k"]
 [ext_resource type="PackedScene" uid="uid://bs7u8x7fgsukq" path="res://shroom.tscn" id="26_svotl"]
 [ext_resource type="PackedScene" uid="uid://dxb0uwiaeog7h" path="res://shot.tscn" id="26_ttgqe"]
+[ext_resource type="AudioStream" uid="uid://l0il5vmt56tb" path="res://art/sfx/club-penguin-fart.mp3" id="27_qgr23"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q3h5r"]
 atlas = ExtResource("4_qekuj")
@@ -100,6 +101,30 @@ region = Rect2(300, 74, 50, 37)
 atlas = ExtResource("4_qekuj")
 region = Rect2(0, 111, 50, 37)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_2k72h"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(50, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ti3uu"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(100, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ueov"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(150, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fxv4s"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(200, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5ct2"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(250, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1isdh"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(300, 37, 50, 37)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_h65t2"]
 atlas = ExtResource("6_7cp0r")
 region = Rect2(150, 37, 50, 37)
@@ -127,30 +152,6 @@ region = Rect2(0, 74, 50, 37)
 [sub_resource type="AtlasTexture" id="AtlasTexture_dhhut"]
 atlas = ExtResource("4_qekuj")
 region = Rect2(50, 74, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2k72h"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(50, 37, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ti3uu"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(100, 37, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2ueov"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(150, 37, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fxv4s"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(200, 37, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_i5ct2"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(250, 37, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1isdh"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(300, 37, 50, 37)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_f7eem"]
 animations = [{
@@ -235,6 +236,29 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_2k72h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ti3uu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ueov")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fxv4s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i5ct2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1isdh")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_h65t2")
 }, {
 "duration": 1.0,
@@ -267,29 +291,6 @@ animations = [{
 }],
 "loop": true,
 "name": &"start_crouch",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2k72h")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ti3uu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2ueov")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fxv4s")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_i5ct2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1isdh")
-}],
-"loop": true,
-"name": &"walk",
 "speed": 5.0
 }]
 
@@ -354,7 +355,7 @@ script = ExtResource("3_lp721")
 [node name="Sprite" type="AnimatedSprite2D" parent="Player"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_f7eem")
-animation = &"shoot"
+animation = &"run"
 
 [node name="StandingHitbox" type="CollisionShape2D" parent="Player" groups=["hitboxes"]]
 position = Vector2(0, 3)
@@ -431,6 +432,9 @@ stream = ExtResource("25_eg28k")
 [node name="RayCast2D" parent="Player" instance=ExtResource("26_ttgqe")]
 target_position = Vector2(132.5, -1.25)
 
+[node name="dumb" type="AudioStreamPlayer2D" parent="Player"]
+stream = ExtResource("27_qgr23")
+
 [node name="FootstepTimer" type="Timer" parent="."]
 wait_time = 0.6
 
@@ -474,4 +478,5 @@ position = Vector2(546, 155)
 
 [connection signal="animation_changed" from="Player/Sprite" to="Player" method="_on_sprite_animation_changed"]
 [connection signal="animation_finished" from="Player/Sprite" to="Player" method="_on_sprite_animation_finished"]
+[connection signal="frame_changed" from="Player/Sprite" to="Player" method="_on_sprite_frame_changed"]
 [connection signal="timeout" from="FootstepTimer" to="." method="_on_footstep_timer_timeout"]
