@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bs7u8x7fgsukq"]
+[gd_scene load_steps=28 format=3 uid="uid://bs7u8x7fgsukq"]
 
 [ext_resource type="Script" path="res://shroom.gd" id="1_4hjbn"]
 [ext_resource type="Texture2D" uid="uid://bpj5ulkfk27c3" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Death.png" id="2_iyxi8"]
@@ -172,8 +172,6 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nf5d4"]
 height = 36.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7e5tx"]
-
 [node name="Shroom" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 3
@@ -199,11 +197,12 @@ shape = SubResource("CapsuleShape2D_nf5d4")
 target_position = Vector2(21, 27)
 collision_mask = 2
 
-[node name="ShapeCheckObstacle" type="ShapeCast2D" parent="."]
-position = Vector2(4, 0)
-scale = Vector2(1.1, 1.1)
-shape = SubResource("RectangleShape2D_7e5tx")
-target_position = Vector2(20, 8)
+[node name="RayCheckObstacle" type="RayCast2D" parent="."]
+target_position = Vector2(30, 0)
+collision_mask = 2
+
+[node name="RayCheckJumpable" type="RayCast2D" parent="."]
+target_position = Vector2(23, 18)
 collision_mask = 2
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]

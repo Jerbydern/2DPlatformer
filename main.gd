@@ -50,7 +50,7 @@ func make_puff(puff_type):
 		this_puff.scale *= 0.5
 		this_puff.position.y += 6
 	elif puff_type == &"slide":
-		this_puff.position.y += 15
+		this_puff.position.y += 13
 	elif puff_type == &"run":
 		this_puff.position.y += 2
 	elif puff_type == &"land":

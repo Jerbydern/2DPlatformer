@@ -11,7 +11,7 @@ var alive = true
 var last_frame
 var direction = 1
 @onready var check_ground = $RayCheckGround
-@onready var check_obstacle = $ShapeCheckObstacle
+@onready var check_obstacle = $RayCheckObstacle
 
 var is_facing_right = true
 var dying = false
@@ -52,9 +52,9 @@ func _physics_process(delta):
 			if not dying and not being_hit:
 				$Sprite.set_animation(&"walk")
 				velocity.x = direction * SPEED
-		else:
+		elif not being_hit:
 			velocity.x = move_toward(velocity.x, 0, SPEED)
-			if not dying and not being_hit:
+			if not dying:
 				$Sprite.set_animation(&"idle")
 		
 	else:
@@ -73,11 +73,15 @@ func die():
 	set_collision_layer_value(3,false)
 	alive = false
 
-func hit(damage):
+func hit(damage,knockback,coming_from_right):
 	if not invulnerable:
 		being_hit = true
 		$Sprite.set_animation(&"hit")
 		$Sprite.set_frame(0)
+		if coming_from_right:
+			velocity += Vector2(knockback,-knockback/3)
+		else:
+			velocity += Vector2(-knockback,-knockback/3)
 		health -= damage
 		invulnerable = true
 

@@ -9,7 +9,8 @@ extends CharacterBody2D
 @onready var arrow = $RayCast2D
 @onready var above_check_ray = $AboveCheck
 @onready var above_check
-var arrow_damage = 1
+@export var arrow_damage = 1
+@export var arrow_knockback = 100
 var direction
 var air_jumps_left = air_jumps_max
 var is_facing_right = true
@@ -70,10 +71,12 @@ func _physics_process(delta):
 		position.y-=20
 		velocity.y=0
 		crouch()
-		
+	
+	
 	# prevent getting stuck in slide
-	if current_animation[sliding] and velocity.x == 0 and not above_check:
+	if current_animation[sliding] and velocity.x == 0 and not above_check and not Input.is_action_pressed(&"Crouch"):
 		idle()
+	
 
 	#prevent infinite falling
 	if current_animation[falling] and velocity.y > 1000:
@@ -108,7 +111,7 @@ func _physics_process(delta):
 	air_status = is_on_floor()
 		
 		
-	# attack logic
+	# shooting logic
 	if Input.is_action_just_pressed(&"Attack") and can_shoot:
 		if is_on_floor():
 			$Sprite.set_animation(&"shoot")
@@ -116,13 +119,13 @@ func _physics_process(delta):
 			if arrow.is_colliding():
 				var enemy = arrow.get_collider()
 				if enemy.has_method("hit"):
-					enemy.hit(arrow_damage)
+					enemy.hit(arrow_damage,arrow_knockback,is_facing_right)
 		else:
 			$Sprite.set_animation(&"air_shoot")
 			if arrow.is_colliding():
 				var enemy = arrow.get_collider()
 				if enemy.has_method("hit"):
-					enemy.hit(arrow_damage)
+					enemy.hit(arrow_damage, arrow_knockback/1.5, is_facing_right)
 			
 			
 	# Get the input direction and handle the movement/deceleration.
