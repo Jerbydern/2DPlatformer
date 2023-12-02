@@ -29,6 +29,10 @@ func _process(_delta):
 		
 		if Input.is_action_pressed(&"debug1") and Input.is_action_pressed(&"debug2"):
 			$Player.position = get_node("Start_Point").position
+			var spawners = get_tree().get_nodes_in_group("spawners")
+			for spawner in spawners:
+				if spawner.has_method("restart"):
+					spawner.restart()
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")

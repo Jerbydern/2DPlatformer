@@ -141,7 +141,7 @@ func _physics_process(delta):
 		
 		
 	
-	if Input.is_action_just_pressed(&"Crouch") and is_on_floor():
+	if Input.is_action_just_pressed(&"Crouch") and is_on_floor() and not above_check:
 		down()
 		
 	if current_animation[sliding] and velocity.x == 0:
@@ -150,7 +150,7 @@ func _physics_process(delta):
 		else:
 			idle()
 			
-	if Input.is_action_pressed(&"Crouch") and not current_animation[sliding]:
+	if Input.is_action_pressed(&"Crouch") and not current_animation[sliding] and is_on_floor():
 		crouch()
 		
 	if current_animation[crouch_walking] and not direction:

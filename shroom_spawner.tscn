@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://shroom_spawner.gd" id="1_mnluk"]
 
-[node name="ShroomSpawner" type="Marker2D"]
+[node name="ShroomSpawner" type="Marker2D" groups=["spawners"]]
 script = ExtResource("1_mnluk")
 
 [node name="SpawnTimer" type="Timer" parent="."]

@@ -22,3 +22,8 @@ func _process(delta):
 
 func _on_spawn_timer_timeout():
 	can_spawn = true
+
+func restart():
+	var children = get_tree().get_nodes_in_group(str(self.name))
+	for child in children:
+		child.queue_free()
