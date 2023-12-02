@@ -2,7 +2,7 @@ extends Marker2D
 
 var shroom = preload("res://shroom.tscn")
 @onready var main = get_node("/root/main")
-@export var spawn_cap = 2
+@export var spawn_cap = 1
 var can_spawn = true
 
 # Called when the node enters the scene tree for the first time.

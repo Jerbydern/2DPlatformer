@@ -52,10 +52,9 @@ func _ready():
 	position = main.get_node("Start_Point").position
 
 func _physics_process(delta):
+	
 	#assignments
 	above_check = above_check_ray.is_colliding()
-	
-	
 	
 	# sound effects
 	if (just_started_animation[shooting] or just_started_animation[air_shooting]) and arrow.is_colliding():
@@ -129,13 +128,12 @@ func _physics_process(delta):
 			
 			
 	# Get the input direction and handle the movement/deceleration.
-	direction = Input.get_axis(&"Left", &"Right")
-	direction *= 2
+	direction = Input.get_axis(&"Left", &"Right") * 2
 	if direction >1:
 		direction = 1
 	elif direction <-1:
 		direction = -1
-	if direction and not current_animation[crouching] and not current_animation[sliding] and not current_animation[shooting]:
+	if direction and not current_animation[sliding] and not current_animation[shooting]:
 		move(direction,true)
 			
 	else:
@@ -143,11 +141,29 @@ func _physics_process(delta):
 		
 		
 	
-	if Input.is_action_pressed(&"Crouch") and is_on_floor():
+	if Input.is_action_just_pressed(&"Crouch") and is_on_floor():
+		down()
+		
+	if current_animation[sliding] and velocity.x == 0:
+		if Input.is_action_pressed(&"Crouch") or above_check:
+			crouch()
+		else:
+			idle()
+			
+	if Input.is_action_pressed(&"Crouch") and not current_animation[sliding]:
 		crouch()
 		
-	if Input.is_action_just_released(&"Crouch") and not above_check:
+	if current_animation[crouch_walking] and not direction:
+		crouch()
+		
+	if current_animation[crouching] and not above_check and not Input.is_action_pressed(&"Crouch"):
 		idle()
+		
+	if current_animation[crouch_walking] and not above_check and not Input.is_action_pressed(&"Crouch"):
+		idle()
+	
+	#if Input.is_action_just_released(&"Crouch") and not above_check:
+		#idle()
 	
 	if Input.is_action_just_pressed(&"misc"):
 		main.camera_change()
@@ -233,25 +249,15 @@ func check_start_of():
 	if last_frame != $Sprite.animation:
 		return true
 	
-	
-func crouch():
-	if velocity.x > 0:
-		velocity.x += SPEED/3
-	elif velocity.x < 0:
-		velocity.x -= SPEED/3
-	velocity.x = move_toward(velocity.x,0,SPEED/4)
-	if velocity.x != 0:
-		slide()
-	else:
-		$Sprite.set_animation(&"crouch")
-		set_hitbox($CrouchingHitbox)
-	
 
 func move(run_direction, go):
 	direction_check(run_direction)
-	if go:
+	if go and not current_animation[crouch_walking] and not current_animation[crouching]:
 		velocity.x = run_direction*SPEED
-	if go and is_on_floor() and not above_check:
+	elif go and (current_animation[crouch_walking] or current_animation[crouching]):
+		velocity.x = run_direction*SPEED/3
+		$Sprite.set_animation(&"crouch_walk")
+	if go and is_on_floor() and not above_check and not current_animation[crouch_walking] and not current_animation[crouching]:
 		$Sprite.set_animation(&"run")
 		set_hitbox($StandingHitbox)
 		if check_start_of() and not just_landed():
@@ -263,7 +269,7 @@ func move(run_direction, go):
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
 		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not above_check:
 			idle()
-		elif is_on_floor() and above_check:
+		elif is_on_floor() and above_check and not current_animation[sliding]:
 			crouch()
 
 func get_change_index(animation):
@@ -292,6 +298,7 @@ func slide():
 	set_hitbox($SlidingHitbox)
 	if check_start_of():
 		main.make_puff(&"slide")
+	velocity.x += direction * SPEED
 
 func _on_sprite_frame_changed():
 	pass
@@ -300,3 +307,17 @@ func idle():
 	$Sprite.set_animation(&"idle")
 	set_hitbox($StandingHitbox)
 	can_shoot = true
+
+func down():
+	if direction:
+		slide()
+	else:
+		crouch()
+
+func crouch():
+	set_hitbox($CrouchingHitbox)
+	if direction:
+		$Sprite.set_animation(&"crouch_walk")
+	else:
+		$Sprite.set_animation(&"crouch")
+	

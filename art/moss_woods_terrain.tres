@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://b5v684c4m0vls"]
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://b5v684c4m0vls"]
 
 [ext_resource type="Texture2D" uid="uid://c4fy5ra03hee3" path="res://art/oak_woods_v1.0/oak_woods_tileset.png" id="1_sm2g3"]
+[ext_resource type="PackedScene" uid="uid://dc828bjdjs2r5" path="res://shroom_spawner.tscn" id="2_i5ew4"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_vftch"]
 tile_data = PackedInt32Array(0, 0, 0, 1, 65536, 0, 2, 131072, 0, 3, 196608, 0, 4, 262144, 0, 5, 327680, 0)
@@ -1488,6 +1489,9 @@ texture = ExtResource("1_sm2g3")
 5:5/0/terrains_peering_bit/top_left_corner = 0
 5:5/0/terrains_peering_bit/top_side = 0
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_s8ckv"]
+scenes/3/scene = ExtResource("2_i5ew4")
+
 [resource]
 physics_layer_0/collision_layer = 2
 terrain_set_0/mode = 0
@@ -1496,5 +1500,6 @@ terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 terrain_set_0/terrain_1/name = "BetterTerrain 1"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_35dro")
+sources/1 = SubResource("TileSetScenesCollectionSource_s8ckv")
 pattern_0 = SubResource("TileMapPattern_vftch")
 pattern_1 = SubResource("TileMapPattern_lhi27")

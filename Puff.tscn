@@ -411,7 +411,7 @@ animations = [{
 "speed": 10.0
 }]
 
-[node name="JumpPuff" type="AnimatedSprite2D" groups=["puffs"]]
+[node name="Puff" type="AnimatedSprite2D" groups=["puffs"]]
 texture_filter = 1
 scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_2757k")
