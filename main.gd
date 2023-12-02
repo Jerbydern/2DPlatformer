@@ -28,7 +28,7 @@ func _process(_delta):
 				enemy.revive()
 		
 		if Input.is_action_pressed(&"debug1") and Input.is_action_pressed(&"debug2"):
-			position = get_node("Start_Point").position
+			$Player.position = get_node("Start_Point").position
 	
 func delete_puff():
 	var puffs = get_tree().get_nodes_in_group("puffs")
@@ -52,9 +52,9 @@ func make_puff(puff_type):
 	elif puff_type == &"slide":
 		this_puff.position.y += 15
 	elif puff_type == &"run":
-		this_puff.position.y += 5
+		this_puff.position.y += 2
 	elif puff_type == &"land":
-		this_puff.position.y += 16
+		this_puff.position.y += 12
 		this_puff.scale *= 0.4
 	add_child(this_puff)
 	this_puff.play()

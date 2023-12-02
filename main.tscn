@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://t2umics8n45q"]
+[gd_scene load_steps=76 format=3 uid="uid://t2umics8n45q"]
 
 [ext_resource type="Texture2D" uid="uid://b1jd1mwsgyo40" path="res://art/oak_woods_v1.0/background/background_layer_1.png" id="1_wt7pj"]
 [ext_resource type="Script" path="res://main.gd" id="1_xkjga"]
@@ -11,6 +11,7 @@
 [ext_resource type="TileSet" uid="uid://b5v684c4m0vls" path="res://art/moss_woods_terrain.tres" id="6_7qxbj"]
 [ext_resource type="AudioStream" uid="uid://bexwiaits4b3b" path="res://art/sfx/footstep dirt 1.wav" id="10_1dlbe"]
 [ext_resource type="AudioStream" uid="uid://d1dvlqq3si8cp" path="res://art/sfx/footstep dirt 2.wav" id="11_6c1xt"]
+[ext_resource type="Texture2D" uid="uid://dcisrqd7k3s1m" path="res://art/Adventurer/Adventurer-Hand-Combat/adventurer-hand-combat-Sheet.png" id="11_js4yj"]
 [ext_resource type="AudioStream" uid="uid://b02ek8strifa2" path="res://art/sfx/footstep dirt 3.wav" id="12_s3se8"]
 [ext_resource type="AudioStream" uid="uid://cb2q2hqo0osrs" path="res://art/sfx/footstep dirt 4.wav" id="13_q6hhg"]
 [ext_resource type="AudioStream" uid="uid://moqds1iinpci" path="res://art/sfx/footstep dirt 5.wav" id="14_6fs7e"]
@@ -59,6 +60,30 @@ region = Rect2(300, 0, 50, 37)
 [sub_resource type="AtlasTexture" id="AtlasTexture_d0h84"]
 atlas = ExtResource("4_qekuj")
 region = Rect2(0, 37, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i27sm"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(150, 259, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_obrvu"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(200, 259, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ix333"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(250, 259, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ridxi"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(300, 259, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jiwcd"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(0, 296, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vxspc"]
+atlas = ExtResource("11_js4yj")
+region = Rect2(50, 296, 50, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_31c15"]
 atlas = ExtResource("4_qekuj")
@@ -199,6 +224,29 @@ animations = [{
 }],
 "loop": true,
 "name": &"crouch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i27sm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_obrvu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ix333")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ridxi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jiwcd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vxspc")
+}],
+"loop": true,
+"name": &"crouch_walk",
 "speed": 5.0
 }, {
 "frames": [{
@@ -391,7 +439,7 @@ script = ExtResource("3_lp721")
 [node name="Sprite" type="AnimatedSprite2D" parent="Player"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_f7eem")
-animation = &"air_shoot"
+animation = &"crouch_walk"
 
 [node name="StandingHitbox" type="CollisionShape2D" parent="Player" groups=["hitboxes"]]
 position = Vector2(0, 3)

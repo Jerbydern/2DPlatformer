@@ -20,11 +20,7 @@ var air_status
 var last_frame_progress
 var can_shoot=true
 
-var is_running = false
 var is_jumping = false
-var is_crouching = false
-var is_sliding = false
-var is_falling = false
 
 var run_just_started = false
 var jump_just_started = false
@@ -32,9 +28,9 @@ var crouch_just_started = false
 var slide_just_started = false
 var shoot_just_started = false
 
-var just_stopped_animation = [ false,false,false,false,false,false,false,false]
-var just_started_animation = [false,false,false,false,false,false,false,false]
-var current_animation = [true,false,false,false,false,false,false,false]
+var just_stopped_animation = [false,false,false,false,false,false,false,false,false]
+var just_started_animation = [false,false,false,false,false,false,false,false,false]
+var current_animation = [false,false,false,false,false,false,false,false,false]
 
 var idling = 0
 var running = 1
@@ -44,6 +40,7 @@ var sliding = 4
 var shooting = 5
 var falling = 6
 var air_shooting = 7
+var crouch_walking = 8
 
 var frame = 0
 
@@ -74,6 +71,10 @@ func _physics_process(delta):
 		velocity.y=0
 		crouch()
 		
+	# prevent getting stuck in slide
+	if current_animation[sliding] and velocity.x == 0 and not above_check:
+		idle()
+
 	#prevent infinite falling
 	if current_animation[falling] and velocity.y > 1000:
 		velocity.y = 0
@@ -91,7 +92,7 @@ func _physics_process(delta):
 		
 
 	# Handle Jump.
-	if Input.is_action_just_pressed(&"Jump") and not above_check and not is_sliding:
+	if Input.is_action_just_pressed(&"Jump") and not above_check and not current_animation[sliding]:
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
 			main.make_puff(&"ground_jump")
@@ -131,7 +132,7 @@ func _physics_process(delta):
 		direction = 1
 	elif direction <-1:
 		direction = -1
-	if direction and not is_crouching and not is_sliding and not current_animation[shooting]:
+	if direction and not current_animation[crouching] and not current_animation[sliding] and not current_animation[shooting]:
 		move(direction,true)
 			
 	else:
@@ -142,9 +143,8 @@ func _physics_process(delta):
 	if Input.is_action_pressed(&"Crouch") and is_on_floor():
 		crouch()
 		
-		
-	if Input.is_action_just_released(&"Crouch"):
-		is_crouching = false
+	if Input.is_action_just_released(&"Crouch") and not above_check:
+		idle()
 	
 	if Input.is_action_just_pressed(&"misc"):
 		main.camera_change()
@@ -155,9 +155,6 @@ func _physics_process(delta):
 			$Sprite.set_animation(&"jumping")
 	if velocity.y > 0+300 and not current_animation[air_shooting]:
 		$Sprite.set_animation(&"falling")
-		is_falling = true
-	else:
-		is_falling = false
 		
 	if not $Sprite.is_playing():
 		$Sprite.play()
@@ -235,7 +232,6 @@ func check_start_of():
 	
 	
 func crouch():
-	is_crouching = true
 	if velocity.x > 0:
 		velocity.x += SPEED/3
 	elif velocity.x < 0:
@@ -243,9 +239,7 @@ func crouch():
 	velocity.x = move_toward(velocity.x,0,SPEED/4)
 	if velocity.x != 0:
 		slide()
-		is_crouching = false
 	else:
-		is_sliding = false
 		$Sprite.set_animation(&"crouch")
 		set_hitbox($CrouchingHitbox)
 	
@@ -259,17 +253,12 @@ func move(run_direction, go):
 		set_hitbox($StandingHitbox)
 		if check_start_of() and not just_landed():
 			main.make_puff(&"run")
-		is_running = true
 		
 		
 		
 	if not go:
-		is_running = false
-		
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
-		if is_on_floor() and velocity.x == 0:
-			is_sliding = false
-		if is_on_floor() and not is_crouching and not current_animation[shooting] and not is_sliding and not above_check:
+		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not above_check:
 			idle()
 		elif is_on_floor() and above_check:
 			crouch()
@@ -291,10 +280,11 @@ func get_change_index(animation):
 		return falling
 	if animation == &"air_shoot":
 		return air_shooting
+	if animation == &"crouch_walk":
+		return crouch_walking
 
 
 func slide():
-	is_sliding = true
 	$Sprite.set_animation(&"slide")
 	set_hitbox($SlidingHitbox)
 	if check_start_of():
