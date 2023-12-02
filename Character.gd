@@ -2,28 +2,28 @@ extends CharacterBody2D
 
 
 @onready var main = get_node("/root/main")
-const SPEED = 300.0
+@onready var SPEED = 200
 @export var JUMP_VELOCITY = -400.0
 @export var air_jump_modifier = 0.7
 @export var air_jumps_max = 1
 @onready var arrow = $RayCast2D
-@onready var above_check = $AboveCheck
+@onready var above_check_ray = $AboveCheck
+@onready var above_check
 var arrow_damage = 1
 var direction
 var air_jumps_left = air_jumps_max
-var can_jump = true
 var is_facing_right = true
 var last_frame
 var run_started = false
 var last_air_status
 var air_status
 var last_frame_progress
+var can_shoot=true
 
 var is_running = false
 var is_jumping = false
 var is_crouching = false
 var is_sliding = false
-var is_shooting = false
 var is_falling = false
 
 var run_just_started = false
@@ -32,9 +32,9 @@ var crouch_just_started = false
 var slide_just_started = false
 var shoot_just_started = false
 
-var just_stopped_animation = [ false,false,false,false,false,false,false]
-var just_started_animation = [false,false,false,false,false,false,false]
-var current_animation = [true,false,false,false,false,false,false]
+var just_stopped_animation = [ false,false,false,false,false,false,false,false]
+var just_started_animation = [false,false,false,false,false,false,false,false]
+var current_animation = [true,false,false,false,false,false,false,false]
 
 var idling = 0
 var running = 1
@@ -43,6 +43,7 @@ var crouching = 3
 var sliding = 4
 var shooting = 5
 var falling = 6
+var air_shooting = 7
 
 var frame = 0
 
@@ -53,22 +54,28 @@ func _ready():
 	position = main.get_node("Start_Point").position
 
 func _physics_process(delta):
+	#assignments
+	above_check = above_check_ray.is_colliding()
+	
+	
 	
 	# sound effects
-	if just_started_animation[shooting] and $RayCast2D.is_colliding():
+	if (just_started_animation[shooting] or just_started_animation[air_shooting]) and arrow.is_colliding():
 		$ShotSound.play()
+	elif (just_started_animation[shooting] or just_started_animation[air_shooting]):
+		$ShotMissed.play()
 		
 	if just_started_animation[running]:
 		main.footstep()
 	
 	# prevent getting stuck while sliding
-	if is_falling and above_check.is_colliding():
+	if current_animation[falling] and above_check:
 		position.y-=20
 		velocity.y=0
 		crouch()
 		
 	#prevent infinite falling
-	if is_falling and velocity.y > 1000:
+	if current_animation[falling] and velocity.y > 1000:
 		velocity.y = 0
 		position.y -= 20
 		
@@ -84,7 +91,7 @@ func _physics_process(delta):
 		
 
 	# Handle Jump.
-	if Input.is_action_just_pressed(&"Jump") and not above_check.is_colliding() and not is_sliding:
+	if Input.is_action_just_pressed(&"Jump") and not above_check and not is_sliding:
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
 			main.make_puff(&"ground_jump")
@@ -101,15 +108,20 @@ func _physics_process(delta):
 		
 		
 	# attack logic
-	if Input.is_action_just_pressed(&"Attack"):
+	if Input.is_action_just_pressed(&"Attack") and can_shoot:
 		if is_on_floor():
-			is_shooting = true
 			$Sprite.set_animation(&"shoot")
+			can_shoot = false
 			if arrow.is_colliding():
 				var enemy = arrow.get_collider()
 				if enemy.has_method("hit"):
 					enemy.hit(arrow_damage)
-	
+		else:
+			$Sprite.set_animation(&"air_shoot")
+			if arrow.is_colliding():
+				var enemy = arrow.get_collider()
+				if enemy.has_method("hit"):
+					enemy.hit(arrow_damage)
 			
 			
 	# Get the input direction and handle the movement/deceleration.
@@ -119,7 +131,7 @@ func _physics_process(delta):
 		direction = 1
 	elif direction <-1:
 		direction = -1
-	if direction and not is_crouching and not is_sliding:
+	if direction and not is_crouching and not is_sliding and not current_animation[shooting]:
 		move(direction,true)
 			
 	else:
@@ -139,9 +151,9 @@ func _physics_process(delta):
 	
 	
 	if is_jumping:
-		if velocity.y < 0:
+		if velocity.y < 0 and not current_animation[air_shooting]:
 			$Sprite.set_animation(&"jumping")
-	if velocity.y > 0+300:
+	if velocity.y > 0+300 and not current_animation[air_shooting]:
 		$Sprite.set_animation(&"falling")
 		is_falling = true
 	else:
@@ -173,14 +185,14 @@ func _physics_process(delta):
 
 func _on_sprite_animation_finished():
 	if $Sprite.animation == &"shoot":
-		is_shooting = false
+		idle()
+	if $Sprite.animation == &"air_shoot":
+		idle()
 		
 
 
 
 func _on_sprite_animation_changed():
-	if last_frame == &"shoot":
-		is_shooting = false
 	if last_frame == &"run":
 		run_started = false
 	
@@ -189,7 +201,8 @@ func _on_sprite_animation_changed():
 	if last_frame:
 		var last_action = get_change_index(last_frame)
 		var curr_action = get_change_index($Sprite.animation)
-		
+		current_animation.fill(false)
+		current_animation[curr_action] = true
 		just_stopped_animation[last_action] = true
 		just_started_animation[curr_action] = true
 		
@@ -241,7 +254,7 @@ func move(run_direction, go):
 	direction_check(run_direction)
 	if go:
 		velocity.x = run_direction*SPEED
-	if go and is_on_floor():
+	if go and is_on_floor() and not above_check:
 		$Sprite.set_animation(&"run")
 		set_hitbox($StandingHitbox)
 		if check_start_of() and not just_landed():
@@ -256,10 +269,9 @@ func move(run_direction, go):
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
 		if is_on_floor() and velocity.x == 0:
 			is_sliding = false
-		if is_on_floor() and not is_crouching and not is_shooting and not is_sliding and not above_check.is_colliding():
-			$Sprite.set_animation(&"idle")
-			set_hitbox($StandingHitbox)
-		elif is_on_floor() and above_check.is_colliding():
+		if is_on_floor() and not is_crouching and not current_animation[shooting] and not is_sliding and not above_check:
+			idle()
+		elif is_on_floor() and above_check:
 			crouch()
 
 func get_change_index(animation):
@@ -277,6 +289,8 @@ func get_change_index(animation):
 		return shooting
 	if animation == &"falling":
 		return falling
+	if animation == &"air_shoot":
+		return air_shooting
 
 
 func slide():
@@ -288,3 +302,8 @@ func slide():
 
 func _on_sprite_frame_changed():
 	pass
+	
+func idle():
+	$Sprite.set_animation(&"idle")
+	set_hitbox($StandingHitbox)
+	can_shoot = true

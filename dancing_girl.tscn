@@ -1,0 +1,72 @@
+[gd_scene load_steps=12 format=3 uid="uid://dsrbml1qnby6j"]
+
+[ext_resource type="Texture2D" uid="uid://d2sqb5wnkghlt" path="res://art/Dancing Girl Files/spritesheets/snap.png" id="1_4wewq"]
+[ext_resource type="Script" path="res://dancing_girl.gd" id="2_n0kd0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1aish"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(0, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uesru"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(39, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8lmfy"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(78, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dnsfj"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(117, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6vfoe"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(156, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6n4d"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(195, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6ao4"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(234, 0, 39, 53)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qlqko"]
+atlas = ExtResource("1_4wewq")
+region = Rect2(273, 0, 39, 53)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b71tr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1aish")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uesru")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8lmfy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dnsfj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6vfoe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6n4d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i6ao4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qlqko")
+}],
+"loop": true,
+"name": &"default",
+"speed": 7.0
+}]
+
+[node name="DancingGirl" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_b71tr")
+script = ExtResource("2_n0kd0")

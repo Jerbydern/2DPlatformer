@@ -6,6 +6,7 @@ const JUMP_VELOCITY = -400.0
 var jump = 0
 var starting_health = 10
 var health = starting_health
+var invulnerable = false
 var alive = true
 var last_frame
 var direction = 1
@@ -73,10 +74,12 @@ func die():
 	alive = false
 
 func hit(damage):
-	being_hit = true
-	$Sprite.set_animation(&"hit")
-	$Sprite.set_frame(0)
-	health -= damage
+	if not invulnerable:
+		being_hit = true
+		$Sprite.set_animation(&"hit")
+		$Sprite.set_frame(0)
+		health -= damage
+		invulnerable = true
 
 
 	
@@ -85,6 +88,7 @@ func hit(damage):
 
 func _on_sprite_animation_finished():
 	if $Sprite.animation == &"hit":
+		invulnerable = false
 		being_hit = false
 		if health <= 0:
 			die()

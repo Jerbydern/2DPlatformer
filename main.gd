@@ -3,7 +3,6 @@ extends Node2D
 @export var puff: PackedScene
 
 var curr_footstep = 0
-var can_footstep = true
 var footstep_sounds
 var camera = 0
 
@@ -59,10 +58,6 @@ func make_puff(puff_type):
 		this_puff.scale *= 0.4
 	add_child(this_puff)
 	this_puff.play()
-
-
-func _on_footstep_timer_timeout():
-	can_footstep = true
 	
 func footstep():
 
