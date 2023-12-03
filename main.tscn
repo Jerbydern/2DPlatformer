@@ -109,6 +109,14 @@ region = Rect2(100, 0, 50, 37)
 atlas = ExtResource("4_qekuj")
 region = Rect2(150, 0, 50, 37)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ili2"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(100, 74, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_otc4f"]
+atlas = ExtResource("4_qekuj")
+region = Rect2(150, 74, 50, 37)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_o4ytw"]
 atlas = ExtResource("4_qekuj")
 region = Rect2(0, 74, 50, 37)
@@ -116,14 +124,6 @@ region = Rect2(0, 74, 50, 37)
 [sub_resource type="AtlasTexture" id="AtlasTexture_jvtkn"]
 atlas = ExtResource("4_qekuj")
 region = Rect2(50, 74, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3ttlh"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(100, 74, 50, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_26few"]
-atlas = ExtResource("4_qekuj")
-region = Rect2(150, 74, 50, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q0g6t"]
 atlas = ExtResource("4_qekuj")
@@ -279,20 +279,25 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_6ili2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_otc4f")
+}],
+"loop": false,
+"name": &"jump_early",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_o4ytw")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jvtkn")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3ttlh")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_26few")
 }],
-"loop": true,
+"loop": false,
 "name": &"jump_start",
-"speed": 5.0
+"speed": 30.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -439,7 +444,7 @@ arrow_knockback = 300
 [node name="Sprite" type="AnimatedSprite2D" parent="Player"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_f7eem")
-animation = &"slide"
+animation = &"jump_early"
 
 [node name="StandingHitbox" type="CollisionShape2D" parent="Player" groups=["hitboxes"]]
 position = Vector2(0, 3)

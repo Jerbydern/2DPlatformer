@@ -21,17 +21,15 @@ var air_status
 var last_frame_progress
 var can_shoot=true
 
-var is_jumping = false
-
 var run_just_started = false
 var jump_just_started = false
 var crouch_just_started = false
 var slide_just_started = false
 var shoot_just_started = false
 
-var just_stopped_animation = [false,false,false,false,false,false,false,false,false]
-var just_started_animation = [false,false,false,false,false,false,false,false,false]
-var current_animation = [false,false,false,false,false,false,false,false,false]
+var just_stopped_animation = [false,false,false,false,false,false,false,false,false,false,false]
+var just_started_animation = [false,false,false,false,false,false,false,false,false,false,false]
+var current_animation = [false,false,false,false,false,false,false,false,false,false,false]
 
 var idling = 0
 var running = 1
@@ -42,6 +40,8 @@ var shooting = 5
 var falling = 6
 var air_shooting = 7
 var crouch_walking = 8
+var jump_starting = 9
+var jump_earlying = 10
 
 var frame = 0
 
@@ -52,6 +52,8 @@ func _ready():
 	position = main.get_node("Start_Point").position
 
 func _physics_process(delta):
+	#print($Sprite.animation)
+	
 	
 	#assignments
 	above_check = above_check_ray.is_colliding()
@@ -82,10 +84,14 @@ func _physics_process(delta):
 		velocity.y = 0
 		position.y -= 20
 		
+	if current_animation[idling] and not is_on_floor():
+		$Sprite.set_animation(&"jumping")
+	
+	if current_animation[jumping] and above_check and is_on_floor():
+		crouch()
 	
 	# refresh jumps after landing
 	if is_on_floor():
-		is_jumping = false
 		air_jumps_left = air_jumps_max
 	
 	# gravity
@@ -95,23 +101,22 @@ func _physics_process(delta):
 
 	# Handle Jump.
 	if Input.is_action_just_pressed(&"Jump") and not above_check and not current_animation[sliding]:
+		
 		if is_on_floor():
+			jump_start()
+			"""
 			velocity.y = JUMP_VELOCITY
 			main.make_puff(&"ground_jump")
-			is_jumping = true
-			
-		elif air_jumps_left > 0:
-			velocity.y = JUMP_VELOCITY*air_jump_modifier
-			main.make_puff(&"air_jump")
-			is_jumping = true
-			air_jumps_left -= 1
+			"""
+		if air_jumps_left > 0 and not is_on_floor():
+			air_jump()
 		
 	# monitoring for checks on landing
 	air_status = is_on_floor()
 		
 		
 	# shooting logic
-	if Input.is_action_just_pressed(&"Attack") and can_shoot:
+	if Input.is_action_just_pressed(&"Attack") and can_shoot and not current_animation[crouching]:
 		if is_on_floor():
 			$Sprite.set_animation(&"shoot")
 			can_shoot = false
@@ -133,7 +138,7 @@ func _physics_process(delta):
 		direction = 1
 	elif direction <-1:
 		direction = -1
-	if direction and not current_animation[sliding] and not current_animation[shooting]:
+	if direction and not current_animation[sliding] and not current_animation[shooting] and not current_animation[jump_starting] and not current_animation[jump_earlying]:
 		move(direction,true)
 			
 	else:
@@ -169,8 +174,8 @@ func _physics_process(delta):
 		main.camera_change()
 	
 	
-	if is_jumping:
-		if velocity.y < 0 and not current_animation[air_shooting]:
+	if current_animation[jumping]:
+		if velocity.y < 0 and not current_animation[air_shooting] and not is_on_floor():
 			$Sprite.set_animation(&"jumping")
 	if velocity.y > 0+300 and not current_animation[air_shooting]:
 		$Sprite.set_animation(&"falling")
@@ -204,7 +209,10 @@ func _on_sprite_animation_finished():
 		idle()
 	if $Sprite.animation == &"air_shoot":
 		idle()
-		
+	if $Sprite.animation == &"jump_start":
+		jump_early()
+	if $Sprite.animation == &"jump_early":
+		$Sprite.set_animation(&"jumping")
 
 
 
@@ -257,7 +265,7 @@ func move(run_direction, go):
 	elif go and (current_animation[crouch_walking] or current_animation[crouching]):
 		velocity.x = run_direction*SPEED/3
 		$Sprite.set_animation(&"crouch_walk")
-	if go and is_on_floor() and not above_check and not current_animation[crouch_walking] and not current_animation[crouching]:
+	if go and is_on_floor() and not above_check and not current_animation[crouch_walking] and not current_animation[crouching] and not current_animation[jump_earlying] and not just_started_animation[jumping]:
 		$Sprite.set_animation(&"run")
 		set_hitbox($StandingHitbox)
 		if check_start_of() and not just_landed():
@@ -267,10 +275,11 @@ func move(run_direction, go):
 		
 	if not go:
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
-		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not above_check:
+		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not current_animation[jump_starting] and not current_animation[jump_earlying] and not above_check:
 			idle()
 		elif is_on_floor() and above_check and not current_animation[sliding]:
 			crouch()
+			
 
 func get_change_index(animation):
 	if animation == &"idle":
@@ -291,6 +300,10 @@ func get_change_index(animation):
 		return air_shooting
 	if animation == &"crouch_walk":
 		return crouch_walking
+	if animation == &"jump_start":
+		return jump_starting
+	if animation == &"jump_early":
+		return jump_earlying
 
 
 func slide():
@@ -321,3 +334,20 @@ func crouch():
 	else:
 		$Sprite.set_animation(&"crouch")
 	
+func jump_start():
+	$Sprite.set_animation(&"jump_start")
+	set_hitbox($CrouchingHitbox)
+	
+func jump_early():
+	# as in the early part of the jump
+	$Sprite.set_animation(&"jump_early")
+	if Input.is_action_pressed(&"Jump"):
+		velocity.y = JUMP_VELOCITY
+	else:
+		velocity.y = JUMP_VELOCITY/1.3
+		
+func air_jump():
+	velocity.y = JUMP_VELOCITY*air_jump_modifier
+	$Sprite.set_animation(&"jumping")
+	main.make_puff(&"air_jump")
+	air_jumps_left -= 1
