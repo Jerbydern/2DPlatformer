@@ -1,10 +1,43 @@
-[gd_scene load_steps=28 format=3 uid="uid://bs7u8x7fgsukq"]
+[gd_scene load_steps=38 format=3 uid="uid://bs7u8x7fgsukq"]
 
 [ext_resource type="Script" path="res://shroom.gd" id="1_4hjbn"]
+[ext_resource type="Texture2D" uid="uid://cscha6haed3g8" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Attack.png" id="2_8gryb"]
 [ext_resource type="Texture2D" uid="uid://bpj5ulkfk27c3" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Death.png" id="2_iyxi8"]
 [ext_resource type="Texture2D" uid="uid://bmxc3awjelynm" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Idle.png" id="2_t11c8"]
 [ext_resource type="Texture2D" uid="uid://bwwb1h7o08ax2" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Take Hit.png" id="3_djavq"]
 [ext_resource type="Texture2D" uid="uid://c8uwengr0v7jl" path="res://art/Monsters_Creatures_Fantasy/Mushroom/Run.png" id="5_64no3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lj5nd"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(0, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kyxjj"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(150, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q6pvo"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(300, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bgrdf"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(450, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tx0ln"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(600, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wnu8q"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(750, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lja0f"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(900, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rs5et"]
+atlas = ExtResource("2_8gryb")
+region = Rect2(1050, 0, 150, 150)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pisnn"]
 atlas = ExtResource("2_iyxi8")
@@ -90,6 +123,35 @@ region = Rect2(1050, 0, 150, 150)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_lj5nd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kyxjj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q6pvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bgrdf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tx0ln")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wnu8q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lja0f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rs5et")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pisnn")
 }, {
 "duration": 1.0,
@@ -172,16 +234,21 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nf5d4"]
 height = 36.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_11cx7"]
+radius = 9.0
+height = 29.7912
+
 [node name="Shroom" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 3
 platform_floor_layers = 4294901760
 script = ExtResource("1_4hjbn")
+punch_knockback = 500
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_0bqml")
-animation = &"walk"
+animation = &"new_animation"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 8)
@@ -205,4 +272,21 @@ collision_mask = 2
 target_position = Vector2(23, 18)
 collision_mask = 2
 
+[node name="RayCheckPunch" type="RayCast2D" parent="."]
+position = Vector2(0, 7)
+target_position = Vector2(23, 3)
+
+[node name="RayCheckAttack" type="RayCast2D" parent="."]
+target_position = Vector2(27, 11)
+
+[node name="TimerAttackCooldown" type="Timer" parent="."]
+
+[node name="Punchbox" type="CollisionShape2D" parent="."]
+position = Vector2(15, 9)
+rotation = -1.55416
+scale = Vector2(0.518069, 0.639385)
+shape = SubResource("CapsuleShape2D_11cx7")
+disabled = true
+
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
+[connection signal="timeout" from="TimerAttackCooldown" to="." method="_on_timer_attack_cooldown_timeout"]

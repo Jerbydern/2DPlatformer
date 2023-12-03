@@ -11,6 +11,7 @@ extends CharacterBody2D
 @onready var above_check
 @export var arrow_damage = 1
 @export var arrow_knockback = 100
+@export var health = 3
 var direction
 var air_jumps_left = air_jumps_max
 var is_facing_right = true
@@ -20,6 +21,7 @@ var last_air_status
 var air_status
 var last_frame_progress
 var can_shoot=true
+var invulnerable = false
 
 var run_just_started = false
 var jump_just_started = false
@@ -27,9 +29,9 @@ var crouch_just_started = false
 var slide_just_started = false
 var shoot_just_started = false
 
-var just_stopped_animation = [false,false,false,false,false,false,false,false,false,false,false]
-var just_started_animation = [false,false,false,false,false,false,false,false,false,false,false]
-var current_animation = [false,false,false,false,false,false,false,false,false,false,false]
+var just_stopped_animation = [false,false,false,false,false,false,false,false,false,false,false, false]
+var just_started_animation = [false,false,false,false,false,false,false,false,false,false,false, false]
+var current_animation = [false,false,false,false,false,false,false,false,false,false,false,false]
 
 var idling = 0
 var running = 1
@@ -42,6 +44,7 @@ var air_shooting = 7
 var crouch_walking = 8
 var jump_starting = 9
 var jump_earlying = 10
+var hitting = 11
 
 var frame = 0
 
@@ -213,6 +216,9 @@ func _on_sprite_animation_finished():
 		jump_early()
 	if $Sprite.animation == &"jump_early":
 		$Sprite.set_animation(&"jumping")
+	if $Sprite.animation == &"hit":
+		invulnerable = false
+		$Sprite.set_animation(&"idle")
 
 
 
@@ -275,7 +281,7 @@ func move(run_direction, go):
 		
 	if not go:
 		velocity.x = move_toward(velocity.x, 0, SPEED/7)
-		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not current_animation[jump_starting] and not current_animation[jump_earlying] and not above_check:
+		if is_on_floor() and not current_animation[crouching] and not current_animation[shooting] and not current_animation[sliding] and not current_animation[jump_starting] and not current_animation[jump_earlying] and not current_animation[hitting] and not above_check:
 			idle()
 		elif is_on_floor() and above_check and not current_animation[sliding]:
 			crouch()
@@ -304,6 +310,8 @@ func get_change_index(animation):
 		return jump_starting
 	if animation == &"jump_early":
 		return jump_earlying
+	if animation == &"hit":
+		return hitting
 
 
 func slide():
@@ -320,6 +328,7 @@ func idle():
 	$Sprite.set_animation(&"idle")
 	set_hitbox($StandingHitbox)
 	can_shoot = true
+	invulnerable = false
 
 func down():
 	if direction:
@@ -351,3 +360,15 @@ func air_jump():
 	$Sprite.set_animation(&"jumping")
 	main.make_puff(&"air_jump")
 	air_jumps_left -= 1
+
+func hit(damage,knockback,coming_from_right):
+	print("triggered")
+	if not invulnerable:
+		$Sprite.set_animation(&"hit")
+		$Sprite.set_frame(0)
+		if coming_from_right:
+			velocity += Vector2(knockback,-knockback/3)
+		else:
+			velocity += Vector2(-knockback,-knockback/3)
+		health -= damage
+		invulnerable = true
